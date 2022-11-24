@@ -1,0 +1,463 @@
+Inicio Programa
+
+
+    inicio AdeD Socio
+        Campo Dni_Socio Numerico[5] CP
+        Campo Nombre_Apellido Texto[36]
+        Campo Direccion Texto[30]
+        Campo Codigo_Barrio Numerico[5] CP3
+        Campo Codigo_Actividad Numerico[3] CP2
+        Campo Saldo Numerico[8]
+    Fin AdeD Socio
+
+    Inicio AdeD Actividad
+        Campo Codigo_Actividad Numerico[3] CP
+        Campo Detalle Texto[20]
+    Fin AdeD Actividad
+
+    Inicio AdeD Tabla_Barrio
+        Campo Codigo_Barrio Numerico[5] CP
+        Campo Nombre_Barrio Texto[20]
+    Fin AdeD Tabla_Barrio
+
+
+    Inicio Formulario frmHome
+
+    Fin Formulario
+
+
+
+    Inicio Formulario frmAgregarUsuario
+        Marco mrcCargaDeDatos
+            Caja de Texto txtDni
+            Caja de Texto txtNombre_Apellido
+            Caja de Texto txtDireccion
+            Lista desplegable lstBarrio
+            Lista desplegable lstActividad
+            Caja de Texto txtSaldo
+        Fin Marco
+        Boton de comando btnCargar
+    Fin Formulario
+
+
+
+    Inicio Formulario frmBusqueda
+        Caja de Texto txtCodigo
+        Boton de comando btnBuscar
+        Marco mrcDatosClientes
+            Caja de Texto txtNombre_Apellido
+            Caja de Texto txtDireccion
+            Lista desplegable lstBarrio
+            Lista desplegable lstActividad
+            Caja de Texto txtSaldo
+        Fin Marco
+        Boton de comando btnEliminar
+        Boton de comando btnModificar
+        Boton de comando btnGuardar
+    Fin Formulario
+
+
+
+    Inicio Formulario frmListadoClienteBarrio
+        Lista desplegable lstBarrio
+        grilla grlClientes
+        Boton de comando btnListar
+    Fin Formulario
+
+
+    Inicio Formulario frmListadoClientes
+        Marco mrcConsultadeDatos
+            grilla grlClientes
+            Caja de Texto txtTotal
+            Caja de Texto txtCantidad
+            Caja de Texto txtPromedio
+            Boton de comando btnListar
+        Fin Marco
+    Fin Formulario
+
+
+
+    Inicio Formulario frmListarClientes
+        grilla grlClientes
+        Boton de comando btnListar
+    Fin Formulario
+
+
+
+    Inicio Formulario frmConsultarUnCliente
+        Lista desplegable lstClientes
+        Boton de comando btnMostrar
+        Marco mrcDatos
+            Caja de Texto txtActividad
+            Caja de Texto txtSaldo
+        Fin Marco
+    Fin Formulario
+
+
+
+    Incio Formulario
+
+    Fin Formulario
+    
+
+    //frmAgregarUsuario
+    Incio Procedimiento frmAgregarUsuario_Load
+        Abrir AdeD Actividad
+        Leer AdeD Actividad
+
+        Mientras(NOT AdeD Actividad.EOF)
+                
+            lstActividad = AdeD Actividad.Detalle
+                
+            Leer AdeD Actividad
+
+        Fin Mientras
+
+        Cerrar AdeD Actividad
+
+        Abrir AdeD Tabla_Barrio
+        Leer AdeD Tabla_Barrio
+
+        Mientras(NOT AdeD Tabla_Barrio.EOF)
+
+            lstBarrio = AdeD Tabla_Barrio.Nombre_Barrio
+
+            Leer AdeD Tabla_Barrio
+        Fin Mientras
+
+        Cerrar AdeD Tabla_Barrio
+    Fin Procedimiento
+
+
+    Inicio Procedimiento btnCargar_Click
+        variable dni = txtDni
+        variable nombre = txtNombreYApellido
+        variable direccion = txtDireccion
+        variable barrio = lstBarrio
+        variable actividad = lstActividad
+        variable saldo = txtSaldo
+
+
+        Abrir AdeD Socio
+        Leer AdeD Socio
+
+
+        Mientras(NOT AdeD Socio.EOF)
+            Si(AdeD Socio.Dni_Socio == dni)
+                Mensaje = "Este Usuario ya esta registrado"
+            Sino
+
+                AdeD Socio.Dni_Socio = dni
+                AdeD Socio.Nombre_Apellido = nombre
+                AdeD Socio.Direccion = direccion
+
+
+                Abrir AdeD Actividad
+                Leer AdeD Actividad
+
+                Mientras(NOT AdeD Actividad.EOF && AdeD Actividad.Detalle <> actividad)
+                    Leer AdeD Actividad
+                Fin Mientras
+
+                AdeD Socio.Actividad = AdeD Actividad.Codigo_Actividad
+
+                Cerrar AdeD Avtividad
+            
+
+                
+                Abrir AdeD Tabla_Barrio
+                Leer AdeD Tabla_Barrio
+
+                Mientras(NOT AdeD Tabla_Barrio.EOF && AdeD Tabla_Barrio.Nombre_Barrio <> barrio)
+                    Leer AdeD Tabla_Barrio
+                Fin Mientras
+
+                AdeD Socio.Codigo_Barrio = AdeD Tabla_Barrio.Codigo_Barrio
+
+                Cerrar AdeD Tabla_Barrio
+
+                AdeD Socio.Saldo = saldo
+
+            Fin Si    
+
+        Leer AdeD Gimnasio
+
+        Fin Mientras
+
+        Cerrar AdeD Socio
+
+    Fin Procedimiento
+
+
+    //frmBusqueda
+    Inicio Procedimiento frmBusqueda_Load
+        Abrir AdeD Actividad
+        Leer AdeD Actividad
+
+        Mientras(NOT AdeD Actividad.EOF)
+                
+            lstActividad = AdeD Actividad.Detalle
+                
+            Leer AdeD Actividad
+
+        Fin Mientras
+
+        Cerrar AdeD Actividad
+
+        Abrir AdeD Tabla_Barrio
+        Leer AdeD Tabla_Barrio
+
+        Mientras(NOT AdeD Tabla_Barrio.EOF)
+
+            lstBarrio = AdeD Tabla_Barrio.Nombre_Barrio
+
+            Leer AdeD Tabla_Barrio
+        Fin Mientras
+
+        Cerrar AdeD Tabla_Barrio
+
+        txtNombre_Apellido.Enable = false
+        txtDireccion.Enable = false
+        lstBarrio.Enable = false
+        lstActividad.Enable = false
+        txtSaldo.Enable = false
+
+    Fin Procedimiento
+
+
+
+    Inicio Procedimiento btnBuscar_Click
+
+        variable nombre = txtNombre_Apellido
+        variable direccion = txtDireccion
+        variable barrio = lstBarrio
+        variable actividad = lstActividad
+        variable saldo = txtSaldo
+
+        Abrir AdeD Socio
+        Leer AdeD Socio
+
+        Mientras(NOT AdeD Socio.EOF && AdeD Socio.Dni_Socio <> dni)
+            Leer AdeD Socio
+        Fin Mientras
+
+        nombre = AdeD socio.Nombre_Apellido
+        direccion = AdeD socio.Direccion
+        
+        Abrir AdeD barrio
+        Leer AdeD barrio
+
+        Mientras(NOT AdeD barrio.EOF && AdeD barrio.Codigo_Barrio <> AdeD Socio.Codigo_Barrio)
+            Leer AdeD barrio
+        Fin Mientras
+
+        barrio = AdeD barrio.Nombre_Barrio
+
+        Cerrar AdeD barrio
+
+
+        Abrir AdeD Actividad 
+        Leer AdeD Actividad
+
+        Mientras(NOT AdeD Actividad.EOF && AdeD Actividad.Codigo_Actividad <> AdeD Socio.Codigo_Actividad)
+            Leer AdeD Actividad
+        Fin Mientras
+
+        actividad = AdeD Actividad.Detalle
+
+        Cerrar AdeD Actividad
+
+        saldo = AdeD socio.Saldo
+
+        Cerrar AdeD socio
+
+    Fin Procedimiento
+
+
+    Inicio Procedimiento btnEliminar_Click
+
+        Abrir AdeD socio
+        Leer AdeD socio
+
+        Mientras(NOT AdeD socio.EOF && AdeD socio.Dni_Socio <> dni)
+            Leer AdeD socio
+        Fin Mientras
+
+        "DELETE FROM AdeD socio WHERE AdeD socio.Dni_Socio == dni;"
+
+        Cerrar AdeD socio
+
+    Fin Procedimiento
+
+
+    Inicio Procedimiento btnModificar_Click
+        btnGuardar.Enable = true
+
+        txtCodigo.Enable = false
+        txtNombre_Apellido.Enable = true
+        txtDireccion.Enable = true
+        lstBarrio.Enable = true
+        lstActividad.Enable = true
+        txtSaldo.Enable = true
+
+    Fin Procedimiento
+
+    Inicio Procedimiento btnGuardar_Click
+        variable dni = txtDni
+        variable nombre = txtNombre_Apellido
+        variable direccion = txtDireccion
+        variable barrio = lstBarrio
+        variable actividad = lstActividad
+        variable saldo = txtSaldo
+
+
+        Abrir AdeD Socio
+        Leer AdeD Socio
+
+        Mientras(NOT AdeD Socio.EOF && AdeD Socio.Dni_Socio <> dni)
+            leer AdeD Socio
+        Fin Mientras
+
+        "UPDATE Socio SET Nombre_Apellido=" + nombre + "," + "Direccion=" + direccion + "," + 
+           "Codigo_Barrio=@barrio," + "Codigo_Actividad=@actividad," + "Saldo=" + saldo + "," + "WHERE Dni_Socio=" + dni 
+
+        
+        Abrir AdeD Tabla_Barrio
+        Leer AdeD Tabla_Barrio
+
+        Mientras(NOT AdeD Tabla_Barrio.EOF)
+            Si(AdeD Tabla_Barrio.Nombre_Barrio == barrio)
+                "@barrio" = AdeD Tabla_Barrio.Codigo_Barrio 
+            Fin Si
+
+            Leer AdeD Tabla_Barrio
+        Fin Mientras
+
+        Cerrar AdeD Tabla_Barrio
+
+
+        Abrir AdeD Actividad
+        Leer AdeD Actividad
+
+        Mientras(NOT AdeD Actividad.EOF)
+            Si(AdeD Actividad.Detalle == actividad)
+                "@actividad" = AdeD Actividad.Codigo_Actividad
+            Fin Si
+
+            Leer AdeD Tabla_Barrio
+        Fin Mientras
+
+        Cerrar AdeD Actividad
+
+
+        Mensaje = "Socio Actualizado con exito"
+
+        Cerrar AdeD Socio        
+
+
+        txtCodigo.Enable = true
+
+    Fin Procedimiento
+
+
+
+    //frmListadoClienteBarrio
+    Inicio Procedimiento frmListadoClienteBarrio_Load
+        Abrir AdeD Tabla_Barrio
+        Leer AdeD Tabla_Barrio
+
+        Mientras(NOT AdeD Tabla_Barrio.EOF)
+
+            lstBarrio = AdeD Tabla_Barrio.Nombre_Barrio
+
+            Leer AdeD Tabla_Barrio
+        Fin Mientras
+
+        Cerrar AdeD Tabla_Barrio
+    Fin Procedimiento
+
+
+
+    Inicio Procedimiento btnListar_Click
+        variable FG = 1
+        variable barrio = lstBarrio
+        variable CodBarrio TipoNumerica
+
+
+        grlClientes[FG][0] = "Dni_Socio"
+        grlClientes[FG][1] = "Nombre_Apellido"
+
+
+        Abrir AdeD Tabla_Barrio
+        Leer AdeD Tabla_Barrio
+        
+        Mientras(NOT AdeD Tabla_Barrio.EOF)
+            Si(AdeD Tabla_Barrio.Nombre_Barrio == barrio)
+                CodBarrio = AdeD Tabla_Barrio.Codigo_Barrio
+            Fin Si
+
+            Leer AdeD Tabla_Barrio
+        Fin Mientras
+
+        Cerrar AdeD Tabla_Barrio
+
+
+        Abrir AdeD Socio
+        Leer AdeD Socio
+
+        Mientras(NOT AdeD Socio.EOF)
+
+            Si(AdeD Socio.Codigo_Barrio == CodBarrio)
+
+                grlClientes[FG][0] = AdeD Socio.Dni_Socio
+                grlClientes[FG][1] = AdeD Socio.Nombre_Apellido
+
+            Fin Si
+
+            FG = FG + 1
+
+            Leer AdeD Socio
+        Fin Mientras
+
+        Cerrar AdeD Socio
+
+    Fin Procedimiento
+
+
+
+    //frmListadoClientes
+    Inicio Procedimiento btnListar_Click
+        variable FG = 1
+
+
+        grlClientes[FG][0] = "Dni_Saldo"
+        grlClientes[FG][1] = "Nombre_Apellido"
+        grlClientes[FG][2] = "Saldo"
+        
+        
+        Abrir AdeD Socio
+        Leer AdeD Socio
+
+        Mientras(NOT AdeD Socio.EOF)
+            grlClientes[FG][0] = AdeD Socio.Dni_Saldo
+            grlClientes[FG][1] = AdeD Socio.Nombre_Apellido
+            grlClientes[FG][2] = AdeD Socio.Saldo
+
+            FG = FG + 1
+
+            Leer AdeD Socio
+        Fin Mientras
+
+        Cerrar AdeD Socio
+
+    Fin Procedimiento
+
+
+
+    //frmListarClientes
+    Inicio Procedimiento frmListarClientes_Load
+
+    Fin Procedimiento
+
+
+Fin Programa
